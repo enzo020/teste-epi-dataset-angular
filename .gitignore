@@ -1,1 +1,5 @@
-/dataset
+node_modules/
+dist/
+.angular/
+Thumbs.db
+.DS_Store
