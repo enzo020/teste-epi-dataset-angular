@@ -1,12 +1,15 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { DatasetService } from './core/services/dataset.service';
 
 @Component({
-  imports: [RouterOutlet],
   selector: 'app-root',
-  styleUrl: './app.css',
   templateUrl: './app.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class App {
-  protected readonly title = signal('app');
+export class App implements OnInit {
+  protected readonly datasetService = inject(DatasetService);
+
+  ngOnInit(): void {
+    void this.datasetService.loadDefault();
+  }
 }
