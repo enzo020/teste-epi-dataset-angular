@@ -5,8 +5,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { CocoDataset } from '../models/coco.models';
-import { InvalidDatasetError, parseCocoDataset } from '../utils/coco-validator';
 import { GalleryItem } from '../models/gallery-item.model';
+import { CategoryLegendItem, ViewerBox } from '../models/viewer.model';
+import { getCategoryColor } from '../utils/category-colors';
+import { InvalidDatasetError, parseCocoDataset } from '../utils/coco-validator';
 
 const DEFAULT_DATASET_URL = 'dataset/annotations_coco.json';
 const IMAGES_BASE_URL = 'dataset/images/';
@@ -33,7 +35,7 @@ export class DatasetService {
   readonly error = this.errorState.asReadonly();
   readonly loading = this.loadingState.asReadonly();
 
-    readonly galleryItems = computed<GalleryItem[]>(() => {
+  readonly galleryItems = computed<GalleryItem[]>(() => {
     const dataset = this.datasetState();
     if (!dataset) {
       return [];
@@ -49,6 +51,35 @@ export class DatasetService {
       url: IMAGES_BASE_URL + image.file_name,
       annotationCount: countByImage.get(image.id) ?? 0,
     }));
+  });
+
+  readonly categoryLegend = computed<CategoryLegendItem[]>(() =>
+    (this.datasetState()?.categories ?? []).map((category) => ({
+      id: category.id,
+      name: category.name,
+      color: getCategoryColor(category.name),
+    })),
+  );
+
+  readonly boxesByImage = computed<Map<number, ViewerBox[]>>(() => {
+    const dataset = this.datasetState();
+    const boxes = new Map<number, ViewerBox[]>();
+    if (!dataset) {
+      return boxes;
+    }
+
+    const categoryNames = new Map<number, string>(
+      dataset.categories.map((category): [number, string] => [category.id, category.name]),
+    );
+
+    for (const annotation of dataset.annotations) {
+      const label = categoryNames.get(annotation.category_id) ?? 'desconhecida';
+      const [x, y, width, height] = annotation.bbox;
+      const imageBoxes = boxes.get(annotation.image_id) ?? [];
+      imageBoxes.push({ id: annotation.id, x, y, width, height, label, color: getCategoryColor(label) });
+      boxes.set(annotation.image_id, imageBoxes);
+    }
+    return boxes;
   });
 
   async loadDefault(): Promise<void> {
