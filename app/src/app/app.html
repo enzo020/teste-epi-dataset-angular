@@ -1,9 +1,15 @@
-@if (datasetService.loading()) {
-  <p>Carregando...</p>
-}
-@if (datasetService.error(); as message) {
-  <p>{{ message }}</p>
-}
-@if (datasetService.dataset(); as dataset) {
-  <p>{{ dataset.images.length }} imagens e {{ dataset.annotations.length }} anotações</p>
-}
+<main class="page">
+  <h1>Explorador do dataset de EPIs</h1>
+
+  @if (datasetService.loading()) {
+    <p>Carregando...</p>
+  }
+
+  @if (datasetService.error(); as message) {
+    <p role="alert">{{ message }}</p>
+  }
+
+  @if (datasetService.dataset()) {
+    <app-image-gallery [items]="datasetService.galleryItems()" />
+  }
+</main>
