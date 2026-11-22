@@ -2,12 +2,14 @@
 //Os componentes só mostram dados, e quem cuida deles é o serviço.
 
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { CocoDataset } from '../models/coco.models';
 import { InvalidDatasetError, parseCocoDataset } from '../utils/coco-validator';
+import { GalleryItem } from '../models/gallery-item.model';
 
 const DEFAULT_DATASET_URL = 'dataset/annotations_coco.json';
+const IMAGES_BASE_URL = 'dataset/images/';
 
 function toFriendlyMessage(error: unknown): string {
   if (error instanceof InvalidDatasetError) {
@@ -30,6 +32,24 @@ export class DatasetService {
   readonly dataset = this.datasetState.asReadonly();
   readonly error = this.errorState.asReadonly();
   readonly loading = this.loadingState.asReadonly();
+
+    readonly galleryItems = computed<GalleryItem[]>(() => {
+    const dataset = this.datasetState();
+    if (!dataset) {
+      return [];
+    }
+
+    const countByImage = new Map<number, number>();
+    for (const annotation of dataset.annotations) {
+      countByImage.set(annotation.image_id, (countByImage.get(annotation.image_id) ?? 0) + 1);
+    }
+
+    return dataset.images.map((image) => ({
+      image,
+      url: IMAGES_BASE_URL + image.file_name,
+      annotationCount: countByImage.get(image.id) ?? 0,
+    }));
+  });
 
   async loadDefault(): Promise<void> {
     await this.load(() => firstValueFrom(this.http.get<unknown>(DEFAULT_DATASET_URL)));
