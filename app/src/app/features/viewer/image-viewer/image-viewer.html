@@ -1,1 +1,37 @@
-<p>image-viewer works!</p>
+<section class="viewer">
+  <header class="header">
+    <h2 class="title">{{ item().image.file_name }}</h2>
+    <button type="button" class="close" (click)="closed.emit()">Fechar</button>
+  </header>
+
+  <svg class="canvas" [attr.viewBox]="viewBox()" role="img" aria-label="Imagem com as anotações desenhadas">
+    <image
+      [attr.href]="item().url"
+      x="0"
+      y="0"
+      [attr.width]="item().image.width"
+      [attr.height]="item().image.height"
+    />
+    @for (box of boxes(); track box.id) {
+      <rect
+        class="box"
+        [attr.x]="box.x"
+        [attr.y]="box.y"
+        [attr.width]="box.width"
+        [attr.height]="box.height"
+        [attr.stroke]="box.color"
+      >
+        <title>{{ box.label }}</title>
+      </rect>
+    }
+  </svg>
+
+  <ul class="legend">
+    @for (entry of legend(); track entry.id) {
+      <li class="legend-item">
+        <span class="swatch" [style.background-color]="entry.color"></span>
+        {{ entry.name }}
+      </li>
+    }
+  </ul>
+</section>  
