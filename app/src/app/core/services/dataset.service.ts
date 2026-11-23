@@ -9,6 +9,7 @@ import { GalleryItem } from '../models/gallery-item.model';
 import { CategoryLegendItem, ViewerBox } from '../models/viewer.model';
 import { getCategoryColor } from '../utils/category-colors';
 import { InvalidDatasetError, parseCocoDataset } from '../utils/coco-validator';
+import { DatasetStats } from '../models/stats.model';
 
 const DEFAULT_DATASET_URL = 'dataset/annotations_coco.json';
 const IMAGES_BASE_URL = 'dataset/images/';
@@ -80,6 +81,36 @@ export class DatasetService {
       boxes.set(annotation.image_id, imageBoxes);
     }
     return boxes;
+  });
+
+    readonly stats = computed<DatasetStats | null>(() => {
+    const dataset = this.datasetState();
+    if (!dataset) {
+      return null;
+    }
+
+    const countByCategory = new Map<number, number>();
+    for (const annotation of dataset.annotations) {
+      countByCategory.set(
+        annotation.category_id,
+        (countByCategory.get(annotation.category_id) ?? 0) + 1,
+      );
+    }
+
+    const totalImages = dataset.images.length;
+    const totalAnnotations = dataset.annotations.length;
+
+    return {
+      totalImages,
+      totalAnnotations,
+      averagePerImage: totalImages === 0 ? 0 : Math.round((totalAnnotations / totalImages) * 100) / 100,
+      byCategory: dataset.categories.map((category) => ({
+        id: category.id,
+        name: category.name,
+        color: getCategoryColor(category.name),
+        count: countByCategory.get(category.id) ?? 0,
+      })),
+    };
   });
 
   async loadDefault(): Promise<void> {
