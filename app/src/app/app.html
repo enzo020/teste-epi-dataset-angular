@@ -10,6 +10,29 @@
   }
 
   @if (datasetService.dataset()) {
-    <app-image-gallery [items]="datasetService.galleryItems()" />
+    @if (datasetService.stats(); as stats) {
+      <app-stats-panel [stats]="stats" />
+    }
+
+    <app-class-filter
+      [options]="datasetService.categoryLegend()"
+      [selected]="activeCategory()"
+      (categoryChange)="filterBy($event)"
+    />
+
+    @if (selectedItem(); as item) {
+      <app-image-viewer
+        [item]="item"
+        [boxes]="selectedBoxes()"
+        [legend]="datasetService.categoryLegend()"
+        (closed)="closeViewer()"
+      />
+    }
+
+    @if (visibleItems().length === 0) {
+      <p>Nenhuma imagem contém essa classe.</p>
+    } @else {
+      <app-image-gallery [items]="visibleItems()" (selected)="select($event)" />
+    }
   }
 </main>
