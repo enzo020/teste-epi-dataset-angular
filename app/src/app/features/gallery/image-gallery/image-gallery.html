@@ -1,14 +1,16 @@
 <ul class="gallery">
   @for (item of items(); track item.image.id) {
-    <li class="card">
-      <img
-        [src]="item.url"
-        [alt]="item.image.file_name"
-        loading="lazy"
-        decoding="async"
-      />
-      <p class="name">{{ item.image.file_name }}</p>
-      <p class="count">Anotações: {{ item.annotationCount }}</p>
+    <li>
+      <button type="button" class="card" (click)="selected.emit(item)">
+        <img
+          [src]="item.url"
+          [alt]="item.image.file_name"
+          loading="lazy"
+          decoding="async"
+        />
+        <span class="name">{{ item.image.file_name }}</span>
+        <span class="count">Anotações: {{ item.annotationCount }}</span>
+      </button>
     </li>
   }
 </ul>

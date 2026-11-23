@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { GalleryItem } from '../../../core/models/gallery-item.model';
 
 @Component({
@@ -9,4 +9,5 @@ import { GalleryItem } from '../../../core/models/gallery-item.model';
 })
 export class ImageGallery {
   readonly items = input.required<GalleryItem[]>();
+  readonly selected = output<GalleryItem>();
 }
