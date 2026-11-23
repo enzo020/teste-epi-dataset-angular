@@ -1,0 +1,25 @@
+<section class="stats" aria-label="Estatísticas do dataset">
+  <dl class="totals">
+    <div class="stat">
+      <dt>Imagens</dt>
+      <dd>{{ stats().totalImages }}</dd>
+    </div>
+    <div class="stat">
+      <dt>Anotações</dt>
+      <dd>{{ stats().totalAnnotations }}</dd>
+    </div>
+    <div class="stat">
+      <dt>Média por imagem</dt>
+      <dd>{{ stats().averagePerImage }}</dd>
+    </div>
+  </dl>
+
+  <ul class="by-category">
+    @for (category of stats().byCategory; track category.id) {
+      <li class="category">
+        <span class="swatch" [style.background-color]="category.color"></span>
+        {{ category.name }}: <strong>{{ category.count }}</strong>
+      </li>
+    }
+  </ul>
+</section>
