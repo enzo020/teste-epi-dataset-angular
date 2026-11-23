@@ -1,0 +1,24 @@
+<div class="filter" role="group" aria-label="Filtrar imagens por classe">
+  <button
+    type="button"
+    class="chip"
+    [class.active]="selected() === null"
+    [attr.aria-pressed]="selected() === null"
+    (click)="categoryChange.emit(null)"
+  >
+    Todas
+  </button>
+
+  @for (option of options(); track option.id) {
+    <button
+      type="button"
+      class="chip"
+      [class.active]="selected() === option.name"
+      [attr.aria-pressed]="selected() === option.name"
+      (click)="categoryChange.emit(option.name)"
+    >
+      <span class="swatch" [style.background-color]="option.color"></span>
+      {{ option.name }}
+    </button>
+  }
+</div>
