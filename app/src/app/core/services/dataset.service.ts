@@ -77,13 +77,21 @@ export class DatasetService {
       const label = categoryNames.get(annotation.category_id) ?? 'desconhecida';
       const [x, y, width, height] = annotation.bbox;
       const imageBoxes = boxes.get(annotation.image_id) ?? [];
-      imageBoxes.push({ id: annotation.id, x, y, width, height, label, color: getCategoryColor(label) });
+      imageBoxes.push({
+        id: annotation.id,
+        x,
+        y,
+        width,
+        height,
+        label,
+        color: getCategoryColor(label),
+      });
       boxes.set(annotation.image_id, imageBoxes);
     }
     return boxes;
   });
 
-    readonly stats = computed<DatasetStats | null>(() => {
+  readonly stats = computed<DatasetStats | null>(() => {
     const dataset = this.datasetState();
     if (!dataset) {
       return null;
@@ -103,7 +111,8 @@ export class DatasetService {
     return {
       totalImages,
       totalAnnotations,
-      averagePerImage: totalImages === 0 ? 0 : Math.round((totalAnnotations / totalImages) * 100) / 100,
+      averagePerImage:
+        totalImages === 0 ? 0 : Math.round((totalAnnotations / totalImages) * 100) / 100,
       byCategory: dataset.categories.map((category) => ({
         id: category.id,
         name: category.name,

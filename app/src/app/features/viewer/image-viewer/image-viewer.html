@@ -4,7 +4,12 @@
     <button type="button" class="close" (click)="closed.emit()">Fechar</button>
   </header>
 
-  <svg class="canvas" [attr.viewBox]="viewBox()" role="img" aria-label="Imagem com as anotações desenhadas">
+  <svg
+    class="canvas"
+    [attr.viewBox]="viewBox()"
+    role="img"
+    aria-label="Imagem com as anotações desenhadas"
+  >
     <image
       [attr.href]="item().url"
       x="0"
@@ -34,4 +39,4 @@
       </li>
     }
   </ul>
-</section>  
+</section>

@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { GalleryItem } from './core/models/gallery-item.model';
 import { ViewerBox } from './core/models/viewer.model';
 import { DatasetService } from './core/services/dataset.service';

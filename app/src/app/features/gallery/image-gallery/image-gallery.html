@@ -2,12 +2,7 @@
   @for (item of items(); track item.image.id) {
     <li>
       <button type="button" class="card" (click)="selected.emit(item)">
-        <img
-          [src]="item.url"
-          [alt]="item.image.file_name"
-          loading="lazy"
-          decoding="async"
-        />
+        <img [src]="item.url" [alt]="item.image.file_name" loading="lazy" decoding="async" />
         <span class="name">{{ item.image.file_name }}</span>
         <span class="count">Anotações: {{ item.annotationCount }}</span>
       </button>
