@@ -1,6 +1,8 @@
 <main class="page">
   <h1>Explorador do dataset de EPIs</h1>
 
+  <app-dataset-upload (fileSelected)="onFileSelected($event)" />
+
   @if (datasetService.loading()) {
     <p>Carregando...</p>
   }

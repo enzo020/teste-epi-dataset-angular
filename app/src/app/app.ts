@@ -5,11 +5,12 @@ import { DatasetService } from './core/services/dataset.service';
 import { ClassFilter } from './features/filter/class-filter/class-filter';
 import { ImageGallery } from './features/gallery/image-gallery/image-gallery';
 import { StatsPanel } from './features/stats/stats-panel/stats-panel';
+import { DatasetUpload } from './features/upload/dataset-upload/dataset-upload';
 import { ImageViewer } from './features/viewer/image-viewer/image-viewer';
 
 @Component({
   selector: 'app-root',
-  imports: [ClassFilter, ImageGallery, ImageViewer, StatsPanel],
+  imports: [ClassFilter, DatasetUpload, ImageGallery, ImageViewer, StatsPanel],
   templateUrl: './app.html',
   styleUrl: './app.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -58,5 +59,11 @@ export class App implements OnInit {
 
   protected filterBy(category: string | null): void {
     this.selectedCategory.set(category);
+  }
+
+  protected onFileSelected(file: File): void {
+    this.selectedId.set(null);
+    this.selectedCategory.set(null);
+    void this.datasetService.loadFromFile(file);
   }
 }
